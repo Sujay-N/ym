@@ -1,0 +1,74 @@
+<script type="text/javascript" src="https://cdn.jsdelivr.net/jquery/latest/jquery.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+<script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+<link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+<style>
+  .daterangepicker.opensright:before {
+    display:none;
+}
+  .daterangepicker.opensright:after {
+    border-top: 1px solid #cccc;
+    top: 1px;
+}
+.cancelBtn.btn.btn-sm.btn-default{
+  display:none;
+}
+.disabled {
+  cursor: not-allowed;
+}
+
+
+/* .daterangepicker.ltr.single.opensright.show-calendar{
+  top: 19px; left: 0px; right: auto; display: inline-block;
+  } */
+  /* .element.style {
+    display:block
+  } */
+
+</style>
+<input type="text" style="display:none" id="date-click" name="birthday" value="10/24/2000" />
+
+<script>
+  
+ $(function() {
+  $('input[name="birthday"]').daterangepicker({
+    timePicker: true,
+    timePickerIncrement:5,
+    singleDatePicker: true,
+    showDropdowns: true,
+    minDate: moment(),
+    maxDate: moment().add(5, 'years')
+  }, function(start, end, label) {
+     // console.log()
+      window.parent.postMessage(JSON.stringify({
+                            event_code: 'ym-client-event', data: JSON.stringify({
+                                event: {
+                                    code: "rukitaDatetime",
+                                    data: {
+                                        selectedDate: moment(start).format('DD-MM-YYYY HH:mm:ss')
+                                    }
+                                }
+                            })
+                        }), '*');
+
+  });
+
+  $('input[name="birthday"]').on('apply.daterangepicker', function(ev, picker) {
+    $('.ltr.single.opensright.show-calendar').css({display:'block'})
+    $('.ltr.single.opensright.show-calendar').fadeTo('slow',.3);
+ $('.ltr.single.opensright.show-calendar').append('<div style="position: absolute;top:0;left:0;width: 100%;height:100%;z-index:2;opacity:0.4;filter: alpha(opacity = 50)"></div>');
+    console.log(picker,ev,"heres")
+   
+    
+  })
+})
+
+
+ 
+
+ // Tirggger the ip box when the dom is ready
+ $( document ).ready(function() {
+    $('#date-click').click();
+});
+</script>
